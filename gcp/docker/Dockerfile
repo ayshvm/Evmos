@@ -15,6 +15,3 @@ RUN evmosd version
 EXPOSE 26656 26657 1317 9090 8545 8546
 
 CMD ["evmosd"]
-
-
-https://github.com/evmos/evmos/releases/download/v16.0.2/evmos_16.0.2_Linux_amd64.tar.gz
