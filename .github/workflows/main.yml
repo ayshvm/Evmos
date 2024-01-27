@@ -27,5 +27,5 @@ jobs:
         env:
           IMAGE_TAG: ${{ github.event.inputs.version }}
         run: |
-          docker build -t ayushvv/evmos:$IMAGE_TAG --build-arg VERSION=$IMAGE_TAG .
+          docker build -t ayushvv/evmos:$IMAGE_TAG --build-arg VERSION=$IMAGE_TAG -f gcp/docker/Dockerfile .
           docker push ayushvv/evmos:$IMAGE_TAG
