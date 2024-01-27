@@ -1,4 +1,4 @@
-name: Cosmos Build
+name: Evmos Build
 on:
   workflow_dispatch:
     inputs:
