@@ -8,7 +8,7 @@ RUN apk add --no-cache $PACKAGES
 ARG VERSION=1.0
 RUN echo "Building version: $VERSION"
 
-RUN wget -O evmosd https://github.com/evmos/releases/download/$VERSION/evmos-$VERSION-Linux_amd64 && chmod +x evmosd && cp evmosd /usr/local/bin/
+RUN wget -O evmosd https://github.com/evmos/releases/download/v$VERSION/evmos-$VERSION-Linux_amd64 && chmod +x evmosd && cp evmosd /usr/local/bin/
 
 RUN evmosd version
  
