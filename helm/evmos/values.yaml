@@ -60,6 +60,15 @@ apptoml:
      mountPath: /apptoml
      filename: app.toml
 
+ingress:
+  enabled: true
+  p2p: evmos-testnet-p2p.ayushv.tf 
+  rpc: evmos-testnet-rpc.ayushv.tf 
+  rest: evmos-testnet-rest.ayushv.tf 
+  tls: false
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+
 
 ####--------------------------- ENVIRONMENT VARIABLES ---------------------------------
 env:
