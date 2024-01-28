@@ -1,0 +1,70 @@
+###---------------------------------------------------------------------------
+deployment:
+   replicas: 1
+   projectName: evmos-testnet
+   namespace: evmos-testnet
+   imagename: docker.io/ayushvv/evmos
+   imagetag: v16.0.0-rc5
+#   cpuLimit: 300m             
+#   memoryLimit: 500Mi
+   port:
+    - 1317
+    - 9090
+    - 26656
+    - 26657
+    - 26660
+    - 8545
+    - 8546
+
+
+serviceAccount:  # Vault Auth used in init script
+  enabled: false
+
+svc:
+   clustertype: NodePort     # Support: LoadBalancer, NodePort, ClusterIP
+   annotations: {}
+
+hpa:
+   enabled: false
+   minReplicas: 1
+   maxReplicas: 2
+   cpuUtilization: 80
+  
+pvc:
+   enabled: true
+   storageClassName: standard-rwo
+
+   mount:
+   - pvName: evmos-pv
+     mountPath: /root/.evmosd
+     storageSize: 100Gi
+
+configmap:
+   enabled: true
+   mount:
+   - configName: init
+     mountPath: /mnt
+     filename: init.sh
+
+configtoml:
+   enabled: true
+   mount:
+   - configName: configtoml
+     mountPath: /configtoml
+     filename: config.toml
+
+apptoml:
+   enabled: true
+   mount:
+   - configName: apptoml
+     mountPath: /apptoml
+     filename: app.toml
+
+
+####--------------------------- ENVIRONMENT VARIABLES ---------------------------------
+env:
+  enabled: true         
+  data:
+  - name: SYNC_SNAPSHOT
+    value: "true"
+

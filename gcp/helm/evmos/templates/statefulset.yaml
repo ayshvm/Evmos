@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: {{ .Values.deployment.projectName }}
+    namespace: {{ .Values.deployment.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.projectName }}
+  serviceName: {{ .Values.deployment.projectName }}
+  replicas: {{ .Values.deployment.replicas }}
+  template:
+    metadata:
+      labels:
+         app: {{ .Values.deployment.projectName }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ .Values.deployment.projectName }}
+        image: {{ .Values.deployment.imagename }}:{{ .Values.deployment.imagetag }}
+        imagePullPolicy: Always
+        {{- if .Values.deployment.cpuLimit }}
+        resources:
+            limits:
+               memory: {{ quote .Values.deployment.memoryLimit }}
+               cpu: {{ quote .Values.deployment.cpuLimit }}
+        {{- end }}
+        ports:
+        {{- range .Values.deployment.port }}
+            - name: port-{{ . }}
+              containerPort: {{ . }}
+              protocol: TCP 
+        {{- end }}        
+        command: [ "/bin/sh" , "/mnt/init.sh" ]
+        {{- if $.Values.env.enabled }}
+        env:
+        {{- range .Values.env.data }}
+          - name: {{ .name }}
+            value: {{ quote .value }}
+        {{- end }}
+
+        {{- end }}
+
+        {{- if .Values.pvc.enabled }}
+        volumeMounts:
+        {{- range $.Values.pvc.mount }}
+          - mountPath: {{ .mountPath }}
+            name: {{ $.Values.deployment.projectName }}-{{ .pvName }}
+        {{- end }}
+        {{- if .Values.configmap.enabled }}
+        {{- range $.Values.configmap.mount }}
+          - mountPath: {{ .mountPath }}
+            name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+        {{- end }}
+        {{- range $.Values.configtoml.mount }}
+          - mountPath: {{ .mountPath }}
+            name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+        {{- end }}
+        {{- range $.Values.apptoml.mount }}
+          - mountPath: {{ .mountPath }}
+            name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+
+      {{- if .Values.configmap.enabled }}
+      volumes:
+      {{- range .Values.configmap.mount }}
+      - name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+        configMap:
+          name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+      {{- end }}
+      {{- range .Values.configtoml.mount }}
+      - name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+        configMap:
+          name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+      {{- end }}
+      {{- range .Values.apptoml.mount }}
+      - name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+        configMap:
+          name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+      {{- end }}
+      {{- end }}
+      # imagePullSecrets:
+      # - name: {{ .Values.deployment.imagepullsecret }}
+ {{- if .Values.pvc.enabled }} 
+  volumeClaimTemplates:
+  {{- range .Values.pvc.mount }}
+  - metadata:
+         name: {{ $.Values.deployment.projectName }}-{{ .pvName }}
+    spec:
+        accessModes:
+            - ReadWriteOnce
+        resources:
+            requests:
+                storage: {{ .storageSize }}
+        storageClassName: {{ $.Values.pvc.storageClassName }} 
+{{- end }}
+{{- end }}
+
