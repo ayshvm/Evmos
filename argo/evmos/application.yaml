@@ -46,7 +46,7 @@ spec:
           mount:
           - pvName: pv
             mountPath: /root/.evmosd
-            storageSize: 100Gi
+            storageSize: 50Gi
         configmap:
           enabled: true
   # Destination cluster and namespace to deploy the application
