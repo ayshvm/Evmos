@@ -2,6 +2,19 @@
 
 This guide outlines the steps to deploy an EVMOS testnet node on Google Kubernetes Engine (GKE) clusters using Terraform for infrastructure provisioning and ArgoCD for GitOps-based deployment. The setup includes creating two GKE clusters with network configurations, a bastion host for accessing the private cluster, and deploying the EVMOS node using Helm charts.
 
+
+# Prerequisites
+Before starting the deployment process, ensure you have the following prerequisites:
+
+Google Cloud Platform (GCP) Account:
+
+Access to GCP Console with the necessary permissions to create GKE clusters, configure networking, and manage resources.
+
+Installed Tools:
+Helm: The package manager for Kubernetes.
+kubectl: The Kubernetes command-line tool.
+ArgoCD CLI: The command-line interface for ArgoCD.
+
 # Step 1: Infrastructure Setup with Terraform
 
 1.1 Create GKE Clusters
