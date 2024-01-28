@@ -13,6 +13,14 @@ Set up a bastion host to access the private GKE cluster securely. Ensure proper 
 1.3 Why Terraform?
 Terraform is chosen for its infrastructure as code (IaC) capabilities, enabling reproducibility, version control, and ease of management for infrastructure components.
 
+```bash
+Authenticate with gcloud and update terraform provider with correct project 
+
+# Run terraform to Deploy Networking and GKE
+cd gcp/gke
+terraform init ;  terraform plan ;  terraform apply 
+```
+
 # Step 2: EVMOS Docker Image and Helm Chart
 2.1 Docker Image
 Create an EVMOS Docker image and push it to Docker Hub for accessibility.
