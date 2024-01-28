@@ -40,7 +40,7 @@ terraform init ;  terraform plan ;  terraform apply
   - Create an EVMOS Docker image and push it to Docker Hub for accessibility.
 
 ```bash
-cd docker
+cd docker/evmos
 docker build -t evmos .
 docker push docker.io/<account>/evmos:<tag>
 ```
