@@ -128,7 +128,7 @@ helm install grafana grafana/grafana  -n monitoring
 - job_name: evmos-testnet
   static_configs:
   - targets:
-    - 34.29.99.190:26660
+    - <evmos node endpoint>:26660
 
 # verify on grafana with job and create dashboard using evmos node metrics
 ```
