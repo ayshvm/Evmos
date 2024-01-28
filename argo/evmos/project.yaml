@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: evmos-testnet
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # Project description
+  description: Evmos Testnet 
+
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+  - 'git@github.com:ayushvtf/Evmos.git'
+  - 'https://github.com/ayushvtf/Evmos.git'
+  - '*'
+
+  # Only permit applications to deploy to the guestbook namespace in the same cluster
+  destinations:
+  - namespace: evmos-testnet
+    server: https://172.16.0.2
+  # Allow all cluster-scoped resources to be created
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+
+  # Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy
+  namespaceResourceBlacklist:
+  - group: ''
+    kind: ResourceQuota
+  - group: ''
+    kind: LimitRange
+  - group: ''
+    kind: NetworkPolicy

@@ -1,0 +1,13 @@
+{{- if .Values.configtoml.enabled }}
+{{- range .Values.configtoml.mount }}
+apiVersion: v1
+kind: ConfigMap 
+metadata:
+  name: {{ $.Values.deployment.projectName }}-{{ .configName }}
+  namespace: {{ $.Values.deployment.namespace }}
+data:
+  {{ .filename }}: | {{ range $.Files.Lines .filename }}
+    {{ . }}{{ end }}     
+---
+{{- end }}
+{{- end }}
