@@ -17,8 +17,8 @@ Installed Tools:
 
 # Step 1: Infrastructure Setup with Terraform
 
-1.1 Create GKE Clusters
-Use Terraform to provision two GKE clusters: one public and one private. Configure network settings, subnets, NAT, and a Cloud Router for communication.
+- Create GKE Clusters
+  - Use Terraform to provision two GKE clusters: one public and one private. Configure network settings, subnets, NAT, and a Cloud Router for communication.
 
 1.2 Bastion Host Configuration
 Set up a bastion host to access the private GKE cluster securely. Ensure proper firewall rules for secure communication.
