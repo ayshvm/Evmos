@@ -52,12 +52,3 @@ resource "google_container_cluster" "private" {
 
 
 }
-
-
-  #   Jenkins use case
-  #   master_authorized_networks_config {
-  #     cidr_blocks {
-  #       cidr_block   = "10.0.0.0/18"
-  #       display_name = "private-subnet-w-jenkins"
-  #     }
-  #   }

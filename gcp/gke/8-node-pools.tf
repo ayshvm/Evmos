@@ -16,7 +16,8 @@ resource "google_container_node_pool" "private" {
 
   node_config {
     preemptible  = false
-    machine_type = "e2-small"
+    machine_type = "e2-standard-2"
+    disk_size_gb = 50
 
     labels = {
       role = "private"
@@ -42,13 +43,16 @@ resource "google_container_node_pool" "public" {
     auto_upgrade = true
   }
 
+
   node_config {
     preemptible  = false
     machine_type = "e2-small"
-
+    disk_size_gb = 50
+    
     labels = {
       role = "public"
     }
+    
 
     service_account = google_service_account.kubernetes.email
     oauth_scopes = [
