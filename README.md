@@ -38,6 +38,12 @@ terraform init ;  terraform plan ;  terraform apply
 2.1 Docker Image
 Create an EVMOS Docker image and push it to Docker Hub for accessibility.
 
+```bash
+cd docker
+docker build -t evmos .
+docker push docker.io/<account>/evmos:<tag>
+```
+
 2.2 Helm Chart
 Develop a Helm chart to deploy the EVMOS node using Polkachu snapshot and seeds.
 
