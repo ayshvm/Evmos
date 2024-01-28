@@ -11,9 +11,9 @@ Google Cloud Platform (GCP) Account:
 Access to GCP Console with the necessary permissions to create GKE clusters, configure networking, and manage resources.
 
 Installed Tools:
-Helm: The package manager for Kubernetes.
-kubectl: The Kubernetes command-line tool.
-ArgoCD CLI: The command-line interface for ArgoCD.
+- Helm: The package manager for Kubernetes.
+- kubectl: The Kubernetes command-line tool.
+- ArgoCD CLI: The command-line interface for ArgoCD.
 
 # Step 1: Infrastructure Setup with Terraform
 
