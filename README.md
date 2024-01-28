@@ -20,11 +20,11 @@ Installed Tools:
 - Create GKE Clusters
   - Use Terraform to provision two GKE clusters: one public and one private. Configure network settings, subnets, NAT, and a Cloud Router for communication.
 
-1.2 Bastion Host Configuration
-Set up a bastion host to access the private GKE cluster securely. Ensure proper firewall rules for secure communication.
+- Bastion Host Configuration
+  - Set up a bastion host to access the private GKE cluster securely. Ensure proper firewall rules for secure communication.
 
-1.3 Why Terraform?
-Terraform is chosen for its infrastructure as code (IaC) capabilities, enabling reproducibility, version control, and ease of management for infrastructure components.
+- Why Terraform?
+  - Terraform is chosen for its infrastructure as code (IaC) capabilities, enabling reproducibility, version control, and ease of management for infrastructure components.
 
 ```bash
 Authenticate with gcloud and update terraform provider with correct project 
@@ -35,8 +35,9 @@ terraform init ;  terraform plan ;  terraform apply
 ```
 
 # Step 2: EVMOS Docker Image and Helm Chart
-2.1 Docker Image
-Create an EVMOS Docker image and push it to Docker Hub for accessibility.
+
+- Docker Image
+  - Create an EVMOS Docker image and push it to Docker Hub for accessibility.
 
 ```bash
 cd docker
@@ -44,33 +45,90 @@ docker build -t evmos .
 docker push docker.io/<account>/evmos:<tag>
 ```
 
-2.2 Helm Chart
-Develop a Helm chart to deploy the EVMOS node using Polkachu snapshot and seeds.
+- Helm Chart
+ -  Develop a Helm chart to deploy the EVMOS node using Polkachu snapshot and seeds.
+
 
 # Step 3: GitOps Deployment with ArgoCD
-3.1 Deploy ArgoCD
-Install ArgoCD on the public GKE cluster, providing a GitOps approach for managing Kubernetes resources.
 
-3.2 Add Private Cluster to ArgoCD
-Use the bastion host to securely connect the private GKE cluster to ArgoCD, allowing centralized management.
+- Deploy ArgoCD
+  - Install ArgoCD on the public GKE cluster, providing a GitOps approach for managing Kubernetes resources.
 
-3.3 Helm Chart Sync
-Sync the Helm chart repository from a GitHub repository to ArgoCD. This connects the Helm chart for EVMOS deployment to the private GKE cluster.
+- Add Private Cluster to ArgoCD
+  - Use the bastion host to securely connect the private GKE cluster to ArgoCD, allowing centralized management.
+
+- Helm Chart Sync
+  - Sync the Helm chart repository from a GitHub repository to ArgoCD. This connects the Helm chart for EVMOS deployment to the private GKE cluster.
+
+```bash
+
+# connect to public gke cluster
+gcloud auth login 
+gcloud container clusters get-credentials <public cluster> --zone us-central1-a --project <gcp project>
+
+# install argocd 
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# connect to bastion host and connect to public cluster and login argo
+gcloud container clusters get-credentials <public cluster> --zone us-central1-a --project <gcp project>
+argocd login <argo url>
+
+# connect to argocd and connect it private cluster on bastion
+gcloud container clusters get-credentials <private cluster> --zone us-central1-a --project <gcp project>
+argocd cluster add <private cluster config>
+
+# add repository to argo which holds helm chart
+argocd repo add https://github.com/ayushvtf/Evmos --username <user> --password <token>
+
+```
 
 # Step 4: Deploy EVMOS Node and Expose Endpoints
-4.1 Sync Helm Chart in ArgoCD
-Trigger the synchronization of the Helm chart in ArgoCD to deploy the EVMOS node to the private GKE cluster.
 
-4.2 Expose Endpoints
-Use a GCE Load Balancer to expose the RPC, P2P, and Prometheus endpoints of the EVMOS node securely.
+- Sync Helm Chart in ArgoCD
+  - Trigger the synchronization of the Helm chart in ArgoCD to deploy the EVMOS node to the private GKE cluster.
+
+- Expose Endpoints
+  -  Use a GCE Load Balancer to expose the RPC, P2P, and Prometheus endpoints of the EVMOS node securely.
+
+```bash
+# continue on bastion, deploy project and application to public cluster which will use argo to deploy to private cluster
+cd argo/evmos
+kubectl apply -f project.yaml
+kubectl apply -f application.yaml
+
+# verify node is synced on argo UI
+```
 
 # Step 5: Monitoring Setup with Prometheus and Grafana
-5.1 Deploy Prometheus and Grafana
-On the public GKE cluster, deploy Prometheus and Grafana for monitoring purposes.
 
-5.2 Configure Prometheus as Data Source
-Connect Grafana to Prometheus as a data source to collect metrics.
+- Deploy Prometheus and Grafana
+  - On the public GKE cluster, deploy Prometheus and Grafana for monitoring purposes.
 
-5.3 Monitoring Dashboard
-Scrape Prometheus metrics from the EVMOS node in the private cluster and create a comprehensive monitoring dashboard in Grafana.
+- Configure Prometheus as Data Source
+  - Connect Grafana to Prometheus as a data source to collect metrics.
 
+- Monitoring Dashboard
+  - Scrape Prometheus metrics from the EVMOS node in the private cluster and create a comprehensive monitoring dashboard in Grafana.
+
+
+```bash
+
+# connect to public gke cluster
+gcloud auth login 
+gcloud container clusters get-credentials <public cluster> --zone us-central1-a --project <gcp project>
+
+# install prometheus and grafana
+helm install grafana grafana/grafana  -n monitoring  
+helm install grafana grafana/grafana  -n monitoring
+
+# update grafana to add prometheus as data source
+# update prometheus configmap to scrape the evmos prometheus
+
+- job_name: evmos-testnet
+  static_configs:
+  - targets:
+    - 34.29.99.190:26660
+
+# verify on grafana with job and create dashboard using evmos node metrics
+```
