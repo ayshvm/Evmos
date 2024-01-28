@@ -66,5 +66,5 @@ env:
   enabled: true         
   data:
   - name: SYNC_SNAPSHOT
-    value: "true"
+    value: "false"
 
