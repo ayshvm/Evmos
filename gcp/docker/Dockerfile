@@ -12,6 +12,7 @@ RUN wget https://github.com/evmos/evmos/releases/download/v16.0.0-rc5/evmos_16.0
     && mv bin/evmosd /usr/local/bin/ \
     && chmod +x /usr/local/bin/evmosd
 
+
 # Display version information
 RUN evmosd version
 
