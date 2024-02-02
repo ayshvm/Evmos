@@ -119,7 +119,7 @@ gcloud auth login
 gcloud container clusters get-credentials <public cluster> --zone us-central1-a --project <gcp project>
 
 # install prometheus and grafana
-helm install grafana grafana/grafana  -n monitoring  
+helm install prometheus prometheus-community/prometheus   -n monitoring
 helm install grafana grafana/grafana  -n monitoring
 
 # update grafana to add prometheus as data source
